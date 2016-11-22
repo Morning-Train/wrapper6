@@ -110,7 +110,7 @@ var Application = function () {
             this[_factories].forEach(function (module) {
 
                 // Create instance
-                var instance = new module.factory(app);
+                var instance = new module.factory(_this);
 
                 // Set binding
                 if (typeof module.name === "string") {
