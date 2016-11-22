@@ -1,0 +1,1 @@
+module.exports = require("./dist/wrapper6.min");

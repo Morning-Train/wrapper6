@@ -1,2 +1,2 @@
 # wrapper6
-ES6 application wrapper
+Documentation coming soon :)
