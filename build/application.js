@@ -12,10 +12,6 @@ var _reactiveMap = require("./reactive-map");
 
 var _reactiveMap2 = _interopRequireDefault(_reactiveMap);
 
-var _module = require("./module");
-
-var _module2 = _interopRequireDefault(_module);
-
 var _es6Symbol = require("es6-symbol");
 
 var _es6Symbol2 = _interopRequireDefault(_es6Symbol);
@@ -114,7 +110,7 @@ var Application = function () {
             this[_factories].forEach(function (module) {
 
                 // Create instance
-                var instance = module.factory instanceof _module2.default ? new module.factory(_this) : module.factory(_this);
+                var instance = new module.factory(app);
 
                 // Set binding
                 if (typeof module.name === "string") {

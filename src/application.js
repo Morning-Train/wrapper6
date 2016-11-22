@@ -3,7 +3,6 @@ Dependencies
  */
 
 import ReactiveMap from "./reactive-map";
-import Module from "./module";
 import Symbol from "es6-symbol";
 import Map from "es6-map";
 

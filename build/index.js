@@ -1,50 +1,29 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 exports.Application = exports.Module = exports.ReactiveMap = exports.queryObject = undefined;
 
 var _queryObject = require("./query-object");
 
-Object.defineProperty(exports, "queryObject", {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_queryObject).default;
-  }
-});
+var _queryObject2 = _interopRequireDefault(_queryObject);
 
 var _reactiveMap = require("./reactive-map");
 
-Object.defineProperty(exports, "ReactiveMap", {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_reactiveMap).default;
-  }
-});
+var _reactiveMap2 = _interopRequireDefault(_reactiveMap);
 
 var _module = require("./module");
 
-Object.defineProperty(exports, "Module", {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_module).default;
-  }
-});
+var _module2 = _interopRequireDefault(_module);
 
 var _application = require("./application");
 
-Object.defineProperty(exports, "Application", {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_application).default;
-  }
-});
-
-var _bootstrap = require("./bootstrap");
-
-var _bootstrap2 = _interopRequireDefault(_bootstrap);
+var _application2 = _interopRequireDefault(_application);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _bootstrap2.default;
+exports.queryObject = _queryObject2.default;
+exports.ReactiveMap = _reactiveMap2.default;
+exports.Module = _module2.default;
+exports.Application = _application2.default;
