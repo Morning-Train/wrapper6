@@ -1,14 +1,7 @@
-import queryObject from "./lib/query-object";
-export var queryObject;
-
-import ReactiveMap from "./lib/reactive-map";
-export var ReactiveMap;
-
-import Module from "./lib/module";
-export var Module;
-
-import Application from "./lib/application";
-export var Application;
+export {default as queryObject} from "./lib/query-object";
+export {default as ReactiveMap} from "./lib/reactive-map";
+export {default as Module} from "./lib/module";
+export {default as Application} from "./lib/application";
 
 import bootstrap from "./lib/bootstrap";
 export default bootstrap;
