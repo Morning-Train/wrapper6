@@ -31,8 +31,7 @@ Symbols
 var _options = (0, _es6Symbol2.default)("options"),
     _factories = (0, _es6Symbol2.default)("factories"),
     _bindings = (0, _es6Symbol2.default)("bindings"),
-    _ready = (0, _es6Symbol2.default)("ready"),
-    _deprecated = (0, _es6Symbol2.default)("deprecated");
+    _ready = (0, _es6Symbol2.default)("ready");
 
 var Application = function () {
     function Application() {
@@ -126,24 +125,29 @@ var Application = function () {
                     }
                 }
 
-                // Boot instance
-                if (typeof instance.boot === "function") {
-                    instance.boot(_this);
-                }
-
-                // Register for ready
+                // Register for events
                 instances.push(instance);
             });
 
-            // Ready up
-            instances.forEach(function (instance) {
-                if (typeof instance.ready === "function") {
-                    instance.ready(_this);
-                }
-            });
+            document.addEventListener("DOMContentLoaded", function () {
 
-            // Ready up application
-            this[_ready] = true;
+                // Boot up
+                instances.forEach(function (instance) {
+                    if (typeof instance.boot === "function") {
+                        instance.boot(_this);
+                    }
+                });
+
+                // Ready up
+                instances.forEach(function (instance) {
+                    if (typeof instance.ready === "function") {
+                        instance.ready(_this);
+                    }
+                });
+
+                // Ready up application
+                _this[_ready] = true;
+            });
         }
 
         /*
