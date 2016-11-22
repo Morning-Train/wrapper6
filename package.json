@@ -1,6 +1,6 @@
 {
   "name": "wrapper6",
-  "version": "0.0.2",
+  "version": "0.0.21",
   "description": "ES6 application wrapper",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "url": "https://github.com/liquidsoft/wrapper6/issues"
   },
   "homepage": "https://github.com/liquidsoft/wrapper6#readme",
-  "devDependencies": {
+  "dependencies": {
     "es6-map": "^0.1.4",
     "es6-symbol": "^3.1.0"
   }
