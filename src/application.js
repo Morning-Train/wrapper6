@@ -84,7 +84,7 @@ export default class Application {
         this[_factories].forEach(( module ) => {
 
             // Create instance
-            var instance = module.factory instanceof Module ? new module.factory( this ) : module.factory( this );
+            var instance = new module.factory(app);
 
             // Set binding
             if (typeof module.name === "string") {
