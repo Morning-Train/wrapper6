@@ -14,8 +14,7 @@ const
     _options = Symbol("options"),
     _factories = Symbol("factories"),
     _bindings = Symbol("bindings"),
-    _ready = Symbol("ready"),
-    _deprecated = Symbol("deprecated");
+    _ready = Symbol("ready");
 
 export default class Application {
 
@@ -99,25 +98,31 @@ export default class Application {
                 }
             }
 
-            // Boot instance
-            if (typeof instance.boot === "function") {
-                instance.boot(this);
-            }
-
-            // Register for ready
+            // Register for events
             instances.push(instance);
 
         });
 
-        // Ready up
-        instances.forEach(( instance ) => {
-            if (typeof instance.ready === "function") {
-                instance.ready(this);
-            }
-        });
+        document.addEventListener("DOMContentLoaded", () => {
 
-        // Ready up application
-        this[_ready] = true;
+            // Boot up
+            instances.forEach(( instance ) => {
+                if (typeof instance.boot === "function") {
+                    instance.boot(this);
+                }
+            });
+
+            // Ready up
+            instances.forEach(( instance ) => {
+                if (typeof instance.ready === "function") {
+                    instance.ready(this);
+                }
+            });
+
+            // Ready up application
+            this[_ready] = true;
+
+        });
     }
 
     /*
