@@ -225,6 +225,15 @@ export default class Application {
             // Register binding
             if (typeof factoryMeta.name === "string") {
                 this[_bindings].set(factoryMeta.name, module);
+
+                // Define property
+                if (!this.hasOwnProperty(factoryMeta.name)) {
+                    Object.defineProperty(this, factoryMeta.name, {
+                        get: () => {
+                            return this[_bindings].get(factoryMeta.name);
+                        }
+                    });
+                }
             }
 
             // Call ready
