@@ -189,15 +189,16 @@ var Application = function () {
         /**
          * Requires a set of bindings
          *
+         * @param requirements
          * @returns {Promise}
          */
 
     }, {
         key: "require",
-        value: function require() /* ... */{
+        value: function require(requirements) {
             var _this5 = this;
 
-            var requirements = Array.prototype.slice.call(arguments);
+            console.log("Checking requirements", requirements);
 
             return new _es6Promise.Promise(function (resolve) {
                 if (!requirements instanceof Array) {

@@ -82,7 +82,6 @@ export default class Application {
                 this[_listeners].set(eventName, []);
             }
 
-            console.log("Binding", eventName, "to", callback);
             this[_listeners].get(eventName).push(callback);
         });
 
@@ -130,7 +129,6 @@ export default class Application {
         events.forEach(( eventName ) => {
             if (this[_listeners].has(eventName)) {
                 this[_listeners].get(eventName).forEach(( callback ) => {
-                    console.log("Triggering ", eventName, "with", callback);
                     callback.apply(this, args instanceof Array ? args : [] );
                 });
             }
@@ -146,11 +144,10 @@ export default class Application {
     /**
      * Requires a set of bindings
      *
+     * @param requirements
      * @returns {Promise}
      */
-    require( /* ... */ ) {
-        var requirements = Array.prototype.slice.call(arguments);
-
+    require( requirements ) {
         return new Promise(( resolve ) => {
             if (!requirements instanceof Array) {
                 requirements = [ requirements ];
@@ -173,8 +170,6 @@ export default class Application {
                 // Event callback
                 callback = ( name, module ) => {
                     solutions[name] = module;
-
-                    console.log("Validating requirements", requirements, solutions);
 
                     if (Object.keys(solutions).length === requirements.length) {
                         this.off(eventName, callback);
