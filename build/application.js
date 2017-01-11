@@ -111,6 +111,7 @@ var Application = function () {
                     _this2[_listeners].set(eventName, []);
                 }
 
+                console.log("Binding", eventName, "to", callback);
                 _this2[_listeners].get(eventName).push(callback);
             });
 
@@ -172,6 +173,7 @@ var Application = function () {
             events.forEach(function (eventName) {
                 if (_this4[_listeners].has(eventName)) {
                     _this4[_listeners].get(eventName).forEach(function (callback) {
+                        console.log("Triggering ", eventName, "with", callback);
                         callback.apply(_this4, args instanceof Array ? args : []);
                     });
                 }
@@ -220,6 +222,8 @@ var Application = function () {
                 // Event callback
                 callback = function callback(name, module) {
                     solutions[name] = module;
+
+                    console.log("Validating requirements", requirements, solutions);
 
                     if (Object.keys(solutions).length === requirements.length) {
                         _this5.off(eventName, callback);
@@ -285,13 +289,13 @@ var Application = function () {
                     _this6[_bindings].set(factoryMeta.name, module);
                 }
 
-                // Trigger load
-                _this6.trigger("load:" + factoryMeta.name, [factoryMeta.name, module]);
-
                 // Call ready
                 if (typeof module.ready === "function") {
                     module.ready(_this6, result);
                 }
+
+                // Trigger load
+                _this6.trigger("load:" + factoryMeta.name, [factoryMeta.name, module]);
             }).catch(function (reason) {
                 console.error(reason);
             });
