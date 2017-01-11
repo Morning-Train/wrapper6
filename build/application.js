@@ -282,6 +282,15 @@ var Application = function () {
                 // Register binding
                 if (typeof factoryMeta.name === "string") {
                     _this6[_bindings].set(factoryMeta.name, module);
+
+                    // Define property
+                    if (!_this6.hasOwnProperty(factoryMeta.name)) {
+                        Object.defineProperty(_this6, factoryMeta.name, {
+                            get: function get() {
+                                return _this6[_bindings].get(factoryMeta.name);
+                            }
+                        });
+                    }
                 }
 
                 // Call ready
