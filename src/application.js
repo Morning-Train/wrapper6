@@ -228,13 +228,13 @@ export default class Application {
                 this[_bindings].set(factoryMeta.name, module);
             }
 
-            // Trigger load
-            this.trigger(`load:${factoryMeta.name}`, [ factoryMeta.name, module ]);
-
             // Call ready
             if (typeof module.ready === "function") {
                 module.ready(this, result);
             }
+
+            // Trigger load
+            this.trigger(`load:${factoryMeta.name}`, [ factoryMeta.name, module ]);
 
         }).catch(( reason ) => {
             console.error(reason);
