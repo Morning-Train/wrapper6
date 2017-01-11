@@ -1,10 +1,10 @@
-import queryObject from "./query-object";
+import * as utils from "./utils";
 import ReactiveMap from "./reactive-map";
 import Module from "./module";
 import Application from "./application";
 
 export {
-    queryObject,
+    utils,
     ReactiveMap,
     Module,
     Application

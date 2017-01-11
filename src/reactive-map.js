@@ -1,10 +1,10 @@
 /*
- Dependencies
+Dependencies
  */
 
-import queryObject from "./query-object";
 import Symbol from "es6-symbol";
 import Map from "es6-map";
+import {queryObject} from "./utils";
 
 /*
  Symbols
@@ -16,7 +16,7 @@ const
     _watchers = Symbol("watchers");
 
 /*
- Class
+Class
  */
 
 export default class ReactiveMap {
@@ -47,7 +47,14 @@ export default class ReactiveMap {
     }
 
     watch( key, callback ) {
-        this[_watchers].set(key, callback);
+        var watchers = this[_watchers].get(key);
+
+        if (!watchers instanceof Array) {
+            watchers = [];
+            this[_watchers].set(key, watchers);
+        }
+
+        watchers.push(callback);
 
         return this;
     }
@@ -95,7 +102,7 @@ export default class ReactiveMap {
             key = parts.pop(),
             parentQuery = parts.join("."),
             parent = parts.length === 0 ? this.get() : this.get(parentQuery),
-            watcher,
+            watchers,
             oldValue = this.get(query);
 
         if (!parent) {
@@ -106,24 +113,30 @@ export default class ReactiveMap {
         parent[key] = value;
 
         // Trigger "*" watchers
-        watcher = this[_watchers].get("*");
+        watchers = this[_watchers].get("*");
 
-        if (typeof watcher === "function") {
-            watcher(query, value, oldValue);
+        if (watchers instanceof Array) {
+            watchers.forEach(( watcher ) => {
+                watcher(query, value, oldValue);
+            });
         }
 
         // Trigger "*" watchers of parent
-        watcher = this[_watchers].get(parentQuery + ".*");
+        watchers = this[_watchers].get(parentQuery + ".*");
 
-        if (typeof watcher === "function") {
-            watcher(query, value, oldValue);
+        if (watchers instanceof Array) {
+            watchers.forEach(( watcher ) => {
+                watcher(query, value, oldValue);
+            });
         }
 
         // Trigger specific watcher
-        watcher = this[_watchers].get(query);
+        watchers = this[_watchers].get(query);
 
-        if (typeof watcher === "function") {
-            watcher(query, value, oldValue);
+        if (watchers instanceof Array) {
+            watchers.forEach(( watcher ) => {
+                watcher(query, value, oldValue);
+            });
         }
 
         return this;

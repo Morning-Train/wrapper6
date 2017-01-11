@@ -3,11 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Application = exports.Module = exports.ReactiveMap = exports.queryObject = undefined;
+exports.Application = exports.Module = exports.ReactiveMap = exports.utils = undefined;
 
-var _queryObject = require("./query-object");
+var _utils = require("./utils");
 
-var _queryObject2 = _interopRequireDefault(_queryObject);
+var utils = _interopRequireWildcard(_utils);
 
 var _reactiveMap = require("./reactive-map");
 
@@ -23,7 +23,9 @@ var _application2 = _interopRequireDefault(_application);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.queryObject = _queryObject2.default;
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+exports.utils = utils;
 exports.ReactiveMap = _reactiveMap2.default;
 exports.Module = _module2.default;
 exports.Application = _application2.default;

@@ -7,12 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Dependencies
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Dependencies
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
-
-var _queryObject = require("./query-object");
-
-var _queryObject2 = _interopRequireDefault(_queryObject);
 
 var _es6Symbol = require("es6-symbol");
 
@@ -21,6 +17,8 @@ var _es6Symbol2 = _interopRequireDefault(_es6Symbol);
 var _es6Map = require("es6-map");
 
 var _es6Map2 = _interopRequireDefault(_es6Map);
+
+var _utils = require("./utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35,7 +33,7 @@ var _data = (0, _es6Symbol2.default)("data"),
     _watchers = (0, _es6Symbol2.default)("watchers");
 
 /*
- Class
+Class
  */
 
 var ReactiveMap = function () {
@@ -74,7 +72,14 @@ var ReactiveMap = function () {
     }, {
         key: "watch",
         value: function watch(key, callback) {
-            this[_watchers].set(key, callback);
+            var watchers = this[_watchers].get(key);
+
+            if (!watchers instanceof Array) {
+                watchers = [];
+                this[_watchers].set(key, watchers);
+            }
+
+            watchers.push(callback);
 
             return this;
         }
@@ -100,13 +105,13 @@ var ReactiveMap = function () {
                 if (typeof getter === "function") {
                     result = getter.call(this);
 
-                    return tail.length === 0 ? result : (0, _queryObject2.default)(result, tail.join("."), defaultValue);
+                    return tail.length === 0 ? result : (0, _utils.queryObject)(result, tail.join("."), defaultValue);
                 }
 
                 tail.push(head.pop());
             }
 
-            return (0, _queryObject2.default)(this[_data], query, defaultValue);
+            return (0, _utils.queryObject)(this[_data], query, defaultValue);
         }
     }, {
         key: "set",
@@ -126,7 +131,7 @@ var ReactiveMap = function () {
                 key = parts.pop(),
                 parentQuery = parts.join("."),
                 parent = parts.length === 0 ? this.get() : this.get(parentQuery),
-                watcher,
+                watchers,
                 oldValue = this.get(query);
 
             if (!parent) {
@@ -137,24 +142,30 @@ var ReactiveMap = function () {
             parent[key] = value;
 
             // Trigger "*" watchers
-            watcher = this[_watchers].get("*");
+            watchers = this[_watchers].get("*");
 
-            if (typeof watcher === "function") {
-                watcher(query, value, oldValue);
+            if (watchers instanceof Array) {
+                watchers.forEach(function (watcher) {
+                    watcher(query, value, oldValue);
+                });
             }
 
             // Trigger "*" watchers of parent
-            watcher = this[_watchers].get(parentQuery + ".*");
+            watchers = this[_watchers].get(parentQuery + ".*");
 
-            if (typeof watcher === "function") {
-                watcher(query, value, oldValue);
+            if (watchers instanceof Array) {
+                watchers.forEach(function (watcher) {
+                    watcher(query, value, oldValue);
+                });
             }
 
             // Trigger specific watcher
-            watcher = this[_watchers].get(query);
+            watchers = this[_watchers].get(query);
 
-            if (typeof watcher === "function") {
-                watcher(query, value, oldValue);
+            if (watchers instanceof Array) {
+                watchers.forEach(function (watcher) {
+                    watcher(query, value, oldValue);
+                });
             }
 
             return this;
