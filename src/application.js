@@ -38,6 +38,7 @@ export default class Application {
 
         if (document.readyState !== "complete") {
             document.addEventListener("DOMContentLoaded", () => {
+                this.trigger("ready");
                 this[_factories].forEach((factoryMeta) => {
                     this[_boot](factoryMeta);
                 });
@@ -187,7 +188,16 @@ export default class Application {
 
             // Check if all solutions are loaded
             if (events.length === 0) {
-                resolve(solutions);
+                // Resolve if document is loaded
+                if (document.readyState === "complete") {
+                    resolve(solutions);
+                }
+                else {
+                    this.on("ready", () => {
+                        resolve(solutions);
+                    });
+                }
+
                 return;
             }
 
