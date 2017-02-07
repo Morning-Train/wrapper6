@@ -20,7 +20,7 @@ const
     _boot = Symbol("boot");
 
 /*
-Class
+ Class
  */
 
 export default class Application {
@@ -30,7 +30,7 @@ export default class Application {
      *
      * @param options
      */
-    constructor( options = {} ) {
+    constructor(options = {}) {
         this[_options] = new ReactiveMap(options);
         this[_bindings] = new Map();
         this[_listeners] = new Map();
@@ -46,7 +46,7 @@ export default class Application {
     }
 
     /*
-    Accessors
+     Accessors
      */
 
     /**
@@ -59,7 +59,7 @@ export default class Application {
     }
 
     /*
-    Events
+     Events
      */
 
     /**
@@ -69,7 +69,7 @@ export default class Application {
      * @param callback
      * @returns {*}
      */
-    on( eventName, callback ) {
+    on(eventName, callback) {
         if (typeof callback !== "function") {
             throw new Error("Invalid callback passed as application event listener!");
             return;
@@ -77,7 +77,7 @@ export default class Application {
 
         var events = eventName.split(" ");
 
-        events.forEach(( eventName ) => {
+        events.forEach((eventName) => {
             if (!this[_listeners].has(eventName)) {
                 this[_listeners].set(eventName, []);
             }
@@ -95,10 +95,10 @@ export default class Application {
      * @param callback
      * @returns {Application}
      */
-    off( eventName, callback = null ) {
+    off(eventName, callback = null) {
         var events = eventName.split(" ");
 
-        events.forEach(( eventName ) => {
+        events.forEach((eventName) => {
             if (typeof callback !== "function") {
                 this[_listeners].delete(eventName);
                 return;
@@ -123,13 +123,13 @@ export default class Application {
      * @param args
      * @returns {Application}
      */
-    trigger( eventName, args = null ) {
+    trigger(eventName, args = null) {
         var events = eventName.split(" ");
 
-        events.forEach(( eventName ) => {
+        events.forEach((eventName) => {
             if (this[_listeners].has(eventName)) {
-                this[_listeners].get(eventName).forEach(( callback ) => {
-                    callback.apply(this, args instanceof Array ? args : [] );
+                this[_listeners].get(eventName).forEach((callback) => {
+                    callback.apply(this, args instanceof Array ? args : []);
                 });
             }
         });
@@ -138,7 +138,7 @@ export default class Application {
     }
 
     /*
-    Requests
+     Requests
      */
 
     /**
@@ -147,10 +147,10 @@ export default class Application {
      * @param requirements
      * @returns {Promise}
      */
-    require( requirements ) {
-        return new Promise(( resolve ) => {
+    require(requirements) {
+        return new Promise((resolve) => {
             if (!requirements instanceof Array) {
-                requirements = [ requirements ];
+                requirements = [requirements];
             }
 
             if (requirements.length === 0) {
@@ -161,14 +161,11 @@ export default class Application {
                 solutions = {},
 
                 // Create event name
-                eventName = requirements.map(( name ) => {
-                    name = (typeof name === "string" ? name : "");
-                    return `load:${name}`;
-
-                }).join(" "),
+                events = [],
+                eventName,
 
                 // Event callback
-                callback = ( name, module ) => {
+                callback = (name, module) => {
                     solutions[name] = module;
 
                     if (Object.keys(solutions).length === requirements.length) {
@@ -177,13 +174,33 @@ export default class Application {
                     }
                 };
 
+            // Build event name
+            requirements.forEach((name) => {
+                // Check if already loaded
+                if (this[_bindings].has(name)) {
+                    solutions[name] = this[_bindings].get(name);
+                    return;
+                }
+
+                events.push(`load:${name}`);
+            });
+
+            // Check if all solutions are loaded
+            if (events.length === 0) {
+                resolve(solutions);
+                return;
+            }
+
+            // Create event name
+            eventName = events.join(" ");
+
             // Bind event
             this.on(eventName, callback);
         });
     }
 
     /*
-    Modularization
+     Modularization
      */
 
     /**
@@ -193,7 +210,7 @@ export default class Application {
      * @param factory
      * @returns {*}
      */
-    use( name, factory ) {
+    use(name, factory) {
         // Decide arguments
         if (typeof name === "function") {
             factory = name;
@@ -214,26 +231,41 @@ export default class Application {
 
         // Boot factory if document is already loaded
         if (document.readyState === "complete") {
-            this[_boot] (factoryMeta);
+            this[_boot](factoryMeta);
         }
     }
 
-    [_boot]( factoryMeta ) {
+    /**
+     * Defines a module binding
+     *
+     * @param name
+     * @param binding
+     */
+    define(name, module) {
+        this[_bindings].set(name, module);
+
+        // Define property
+        if (!this.hasOwnProperty(name)) {
+            Object.defineProperty(this, name, {
+                get: () => {
+                    return this[_bindings].get(name);
+                }
+            });
+        }
+
+        // Trigger load
+        this.trigger(`load:${name}`, [name, module]);
+    }
+
+    [_boot](factoryMeta) {
         var module = new factoryMeta.factory(this);
 
-        promisify((typeof module.boot === "function" ? () => { return module.boot( this ) } : true)).then(( result ) => {
+        promisify((typeof module.boot === "function" ? () => {
+            return module.boot(this)
+        } : true)).then((result) => {
             // Register binding
             if (typeof factoryMeta.name === "string") {
-                this[_bindings].set(factoryMeta.name, module);
-
-                // Define property
-                if (!this.hasOwnProperty(factoryMeta.name)) {
-                    Object.defineProperty(this, factoryMeta.name, {
-                        get: () => {
-                            return this[_bindings].get(factoryMeta.name);
-                        }
-                    });
-                }
+                this.define(factoryMeta.name, module);
             }
 
             // Call ready
@@ -241,10 +273,7 @@ export default class Application {
                 module.ready(this, result);
             }
 
-            // Trigger load
-            this.trigger(`load:${factoryMeta.name}`, [ factoryMeta.name, module ]);
-
-        }).catch(( reason ) => {
+        }).catch((reason) => {
             console.error(reason);
         });
     }

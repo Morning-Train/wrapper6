@@ -39,7 +39,7 @@ var _options = (0, _es6Symbol2.default)("options"),
     _boot = (0, _es6Symbol2.default)("boot");
 
 /*
-Class
+ Class
  */
 
 var Application = function () {
@@ -71,7 +71,7 @@ var Application = function () {
     }
 
     /*
-    Accessors
+     Accessors
      */
 
     /**
@@ -86,7 +86,7 @@ var Application = function () {
 
 
         /*
-        Events
+         Events
          */
 
         /**
@@ -181,7 +181,7 @@ var Application = function () {
         }
 
         /*
-        Requests
+         Requests
          */
 
         /**
@@ -210,10 +210,8 @@ var Application = function () {
 
 
                 // Create event name
-                eventName = requirements.map(function (name) {
-                    name = typeof name === "string" ? name : "";
-                    return "load:" + name;
-                }).join(" "),
+                events = [],
+                    eventName,
 
 
                 // Event callback
@@ -226,13 +224,33 @@ var Application = function () {
                     }
                 };
 
+                // Build event name
+                requirements.forEach(function (name) {
+                    // Check if already loaded
+                    if (_this5[_bindings].has(name)) {
+                        solutions[name] = _this5[_bindings].get(name);
+                        return;
+                    }
+
+                    events.push("load:" + name);
+                });
+
+                // Check if all solutions are loaded
+                if (events.length === 0) {
+                    resolve(solutions);
+                    return;
+                }
+
+                // Create event name
+                eventName = events.join(" ");
+
                 // Bind event
                 _this5.on(eventName, callback);
             });
         }
 
         /*
-        Modularization
+         Modularization
          */
 
         /**
@@ -269,37 +287,52 @@ var Application = function () {
                 this[_boot](factoryMeta);
             }
         }
+
+        /**
+         * Defines a module binding
+         *
+         * @param name
+         * @param binding
+         */
+
+    }, {
+        key: "define",
+        value: function define(name, module) {
+            var _this6 = this;
+
+            this[_bindings].set(name, module);
+
+            // Define property
+            if (!this.hasOwnProperty(name)) {
+                Object.defineProperty(this, name, {
+                    get: function get() {
+                        return _this6[_bindings].get(name);
+                    }
+                });
+            }
+
+            // Trigger load
+            this.trigger("load:" + name, [name, module]);
+        }
     }, {
         key: _boot,
         value: function value(factoryMeta) {
-            var _this6 = this;
+            var _this7 = this;
 
             var module = new factoryMeta.factory(this);
 
             (0, _utils.promisify)(typeof module.boot === "function" ? function () {
-                return module.boot(_this6);
+                return module.boot(_this7);
             } : true).then(function (result) {
                 // Register binding
                 if (typeof factoryMeta.name === "string") {
-                    _this6[_bindings].set(factoryMeta.name, module);
-
-                    // Define property
-                    if (!_this6.hasOwnProperty(factoryMeta.name)) {
-                        Object.defineProperty(_this6, factoryMeta.name, {
-                            get: function get() {
-                                return _this6[_bindings].get(factoryMeta.name);
-                            }
-                        });
-                    }
+                    _this7.define(factoryMeta.name, module);
                 }
 
                 // Call ready
                 if (typeof module.ready === "function") {
-                    module.ready(_this6, result);
+                    module.ready(_this7, result);
                 }
-
-                // Trigger load
-                _this6.trigger("load:" + factoryMeta.name, [factoryMeta.name, module]);
             }).catch(function (reason) {
                 console.error(reason);
             });
