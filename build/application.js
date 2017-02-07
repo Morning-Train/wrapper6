@@ -63,6 +63,7 @@ var Application = function () {
 
         if (document.readyState !== "complete") {
             document.addEventListener("DOMContentLoaded", function () {
+                _this.trigger("ready");
                 _this[_factories].forEach(function (factoryMeta) {
                     _this[_boot](factoryMeta);
                 });
@@ -237,7 +238,15 @@ var Application = function () {
 
                 // Check if all solutions are loaded
                 if (events.length === 0) {
-                    resolve(solutions);
+                    // Resolve if document is loaded
+                    if (document.readyState === "complete") {
+                        resolve(solutions);
+                    } else {
+                        _this5.on("ready", function () {
+                            resolve(solutions);
+                        });
+                    }
+
                     return;
                 }
 
