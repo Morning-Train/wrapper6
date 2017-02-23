@@ -343,7 +343,9 @@ var Application = function () {
                     module.ready(_this7, result);
                 }
             }).catch(function (reason) {
-                //console.error(reason);
+                if (reason instanceof Error) {
+                    console.error(reason);
+                }
             });
         }
     }, {
