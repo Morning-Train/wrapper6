@@ -284,7 +284,7 @@ export default class Application {
             }
 
         }).catch((reason) => {
-            console.error(reason);
+            //console.error(reason);
         });
     }
 
