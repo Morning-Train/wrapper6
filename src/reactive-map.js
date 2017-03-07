@@ -1,5 +1,5 @@
 /*
-Dependencies
+ Dependencies
  */
 
 import Symbol from "es6-symbol";
@@ -16,12 +16,12 @@ const
     _watchers = Symbol("watchers");
 
 /*
-Class
+ Class
  */
 
 export default class ReactiveMap {
 
-    constructor( data = {} ) {
+    constructor(data = {}) {
         this[_data] = {};
         this[_computed] = new Map();
         this[_watchers] = new Map();
@@ -30,7 +30,7 @@ export default class ReactiveMap {
         this.set(data);
     }
 
-    computed( key, getter ) {
+    computed(key, getter) {
         if (key && typeof key === "object") {
             Object.keys(key).forEach((propKey) => {
                 this.computed(propKey, key[propKey]);
@@ -46,10 +46,10 @@ export default class ReactiveMap {
         return this;
     }
 
-    watch( key, callback ) {
+    watch(key, callback) {
         var watchers = this[_watchers].get(key);
 
-        if (!watchers instanceof Array) {
+        if (!(watchers instanceof Array)) {
             watchers = [];
             this[_watchers].set(key, watchers);
         }
@@ -59,7 +59,7 @@ export default class ReactiveMap {
         return this;
     }
 
-    get( query, defaultValue = null ) {
+    get(query, defaultValue = null) {
         if (arguments.length === 0) {
             return this[_data];
         }
@@ -88,7 +88,7 @@ export default class ReactiveMap {
         return queryObject(this[_data], query, defaultValue);
     }
 
-    set( query, value ) {
+    set(query, value) {
         // Check if query is an object
         if (typeof query === "object") {
             Object.keys(query).forEach((key) => {
@@ -116,7 +116,7 @@ export default class ReactiveMap {
         watchers = this[_watchers].get("*");
 
         if (watchers instanceof Array) {
-            watchers.forEach(( watcher ) => {
+            watchers.forEach((watcher) => {
                 watcher(query, value, oldValue);
             });
         }
@@ -125,7 +125,7 @@ export default class ReactiveMap {
         watchers = this[_watchers].get(parentQuery + ".*");
 
         if (watchers instanceof Array) {
-            watchers.forEach(( watcher ) => {
+            watchers.forEach((watcher) => {
                 watcher(query, value, oldValue);
             });
         }
@@ -134,7 +134,7 @@ export default class ReactiveMap {
         watchers = this[_watchers].get(query);
 
         if (watchers instanceof Array) {
-            watchers.forEach(( watcher ) => {
+            watchers.forEach((watcher) => {
                 watcher(query, value, oldValue);
             });
         }
@@ -142,11 +142,11 @@ export default class ReactiveMap {
         return this;
     }
 
-    has( query ) {
+    has(query) {
         return this.get(query) !== null;
     }
 
-    resolve( query, resolver ) {
+    resolve(query, resolver) {
         if (!this.has(query)) {
             this.set(query, resolver());
         }
