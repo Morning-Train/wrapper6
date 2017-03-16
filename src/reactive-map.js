@@ -142,6 +142,18 @@ export default class ReactiveMap {
         return this;
     }
 
+    remove(query) {
+        var parts = query.split("."),
+            key = parts.pop(),
+            target = parts.length > 0 ? this.get(parts.join(".")) : this.get();
+
+        if (target && (typeof target === "object")) {
+            delete target[key];
+        }
+
+        return this;
+    }
+
     has(query) {
         return this.get(query) !== null;
     }
