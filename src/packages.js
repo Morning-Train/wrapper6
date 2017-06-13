@@ -101,7 +101,7 @@ function define(name, dependencies, callback) {
     let timeout = config.get('package_timeout', 5000),
         timer = null;
 
-    return new Promise((succeed) => {
+    return new Promise((succeed, fail) => {
 
         // Start timeout
         if (typeof timeout === "number") {
@@ -114,32 +114,41 @@ function define(name, dependencies, callback) {
 
         // Resolve dependencies
         requireDependencies(dependencies).then((requirements) => {
-            let bootResponse = (typeof callback === "function") ? callback(requirements) : callback;
+            try {
+                let bootResponse = (typeof callback === "function") ? callback(requirements) : callback;
 
-            // register package
-            function register(pack) {
-                // cancel timeout
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
+                // register package
+                function register(pack) {
+                    // cancel timeout
+                    if (timer) {
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+
+                    if (pack === false) {
+                        return;
+                    }
+
+                    if (typeof name === "string") {
+                        packages.set(name, pack);
+                        events.emit(`load:${name}`, packages.get(name));
+                    }
+
+                    return succeed(pack);
                 }
 
-                if (pack === false) {
-                    return;
-                }
-
-                if (typeof name === "string") {
-                    packages.set(name, pack);
-                    events.emit(`load:${name}`, packages.get(name));
-                }
-
-                return succeed(pack);
+                // Check boot response
+                return bootResponse instanceof Promise ?
+                    bootResponse.then(register) :
+                    register(bootResponse);
             }
+            catch (ex) {
+                if (config.get("debug", true)) {
+                    console.error(ex);
+                }
 
-            // Check boot response
-            return bootResponse instanceof Promise ?
-                bootResponse.then(register) :
-                register(bootResponse);
+                return fail(ex);
+            }
         });
     });
 };

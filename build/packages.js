@@ -111,7 +111,7 @@ function define(name, dependencies, callback) {
     var timeout = _config2.default.get('package_timeout', 5000),
         timer = null;
 
-    return new _es6Promise.Promise(function (succeed) {
+    return new _es6Promise.Promise(function (succeed, fail) {
 
         // Start timeout
         if (typeof timeout === "number") {
@@ -123,30 +123,39 @@ function define(name, dependencies, callback) {
 
         // Resolve dependencies
         requireDependencies(dependencies).then(function (requirements) {
-            var bootResponse = typeof callback === "function" ? callback(requirements) : callback;
+            try {
 
-            // register package
-            function register(pack) {
-                // cancel timeout
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
+                // register package
+                var register = function register(pack) {
+                    // cancel timeout
+                    if (timer) {
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+
+                    if (pack === false) {
+                        return;
+                    }
+
+                    if (typeof name === "string") {
+                        packages.set(name, pack);
+                        events.emit("load:" + name, packages.get(name));
+                    }
+
+                    return succeed(pack);
+                };
+
+                // Check boot response
+
+
+                var bootResponse = typeof callback === "function" ? callback(requirements) : callback;return bootResponse instanceof _es6Promise.Promise ? bootResponse.then(register) : register(bootResponse);
+            } catch (ex) {
+                if (_config2.default.get("debug", true)) {
+                    console.error(ex);
                 }
 
-                if (pack === false) {
-                    return;
-                }
-
-                if (typeof name === "string") {
-                    packages.set(name, pack);
-                    events.emit("load:" + name, packages.get(name));
-                }
-
-                return succeed(pack);
+                return fail(ex);
             }
-
-            // Check boot response
-            return bootResponse instanceof _es6Promise.Promise ? bootResponse.then(register) : register(bootResponse);
         });
     });
 };
