@@ -109,34 +109,48 @@ function define(name, dependencies, callback) {
     var timeout = _config2.default.get('package_timeout', 5000),
         timer = null;
 
-    if (typeof timeout === "number") {
-        timer = setTimeout(function () {
-            timer = null;
-            throw new Error("Package '" + name + "' timed out!");
-        }, timeout);
-    }
+    return new Promise(function (succeed) {
 
-    // Resolve dependencies
-    return requireDependencies(dependencies).then(function (requirements) {
-        var bootResponse = typeof callback === "function" ? callback(requirements) : callback;
-
-        // register package
-        function register(pack) {
-            // cancel timeout
-            if (timer) {
-                clearTimeout(timer);
+        // Start timeout
+        if (typeof timeout === "number") {
+            timer = setTimeout(function () {
                 timer = null;
-            }
-
-            if (typeof name === "string") {
-                packages.set(name, pack);
-                events.emit("load:" + name, packages.get(name));
-            }
-
-            return pack;
+                throw new Error("Package '" + name + "' timed out!");
+            }, timeout);
         }
 
-        // Check boot response
-        return bootResponse instanceof Promise ? bootResponse.then(register) : register(bootResponse);
+        // Resolve dependencies
+        requireDependencies(dependencies).then(function (requirements) {
+            var bootResponse = typeof callback === "function" ? callback(requirements) : callback;
+
+            if (bootResponse === false) {
+                // cancel timeout
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+
+                return;
+            }
+
+            // register package
+            function register(pack) {
+                // cancel timeout
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+
+                if (typeof name === "string") {
+                    packages.set(name, pack);
+                    events.emit("load:" + name, packages.get(name));
+                }
+
+                return succeed(pack);
+            }
+
+            // Check boot response
+            return bootResponse instanceof Promise ? bootResponse.then(register) : register(bootResponse);
+        });
     });
 };
