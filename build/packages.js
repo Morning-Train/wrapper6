@@ -11,9 +11,15 @@ var _config2 = _interopRequireDefault(_config);
 
 var _events = require("events");
 
+var _es6Promise = require("es6-promise");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // @private
+var events = new _events.EventEmitter(),
+    packages = new Map();
+
+// @public
 /*
  |--------------------------------------------------------------------------
  | Package manager
@@ -24,10 +30,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 
 // @dependencies
-var events = new _events.EventEmitter(),
-    packages = new Map();
-
-// @public
 exports.define = define;
 exports.requireDependencies = requireDependencies;
 
@@ -41,7 +43,7 @@ exports.requireDependencies = requireDependencies;
 function requireDependencies(dependencies) {
     var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-    var promise = new Promise(function (succeed, fail) {
+    var promise = new _es6Promise.Promise(function (succeed, fail) {
         var requirements = {};
 
         // no requirements
@@ -109,7 +111,7 @@ function define(name, dependencies, callback) {
     var timeout = _config2.default.get('package_timeout', 5000),
         timer = null;
 
-    return new Promise(function (succeed) {
+    return new _es6Promise.Promise(function (succeed) {
 
         // Start timeout
         if (typeof timeout === "number") {
@@ -150,7 +152,7 @@ function define(name, dependencies, callback) {
             }
 
             // Check boot response
-            return bootResponse instanceof Promise ? bootResponse.then(register) : register(bootResponse);
+            return bootResponse instanceof _es6Promise.Promise ? bootResponse.then(register) : register(bootResponse);
         });
     });
 };
