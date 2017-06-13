@@ -23,10 +23,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-exports.queryObject = queryObject;
-exports.createScope = createScope;
-exports.Scope = Scope;
-
 /*
  Scope shorthand constructor
  */
@@ -253,3 +249,13 @@ var Scope = function () {
 
     return Scope;
 }();
+
+/*
+ -------------------------------
+ Exports
+ -------------------------------
+ */
+
+exports.queryObject = queryObject;
+exports.createScope = createScope;
+exports.Scope = Scope;

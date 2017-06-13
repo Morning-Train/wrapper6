@@ -18,9 +18,6 @@ var _packages = require("./packages");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-exports.useModule = useModule;
-exports.Module = Module;
-
 /**
  * Module loader
  *
@@ -28,7 +25,6 @@ exports.Module = Module;
  * @param moduleClass
  * @returns {Promise.<TResult>}
  */
-
 function useModule(name, moduleClass) {
     if (arguments.length === 1) {
         moduleClass = name;
@@ -73,3 +69,12 @@ var Module = function () {
 
     return Module;
 }();
+
+/*
+ -------------------------------
+ Exports
+ -------------------------------
+ */
+
+exports.useModule = useModule;
+exports.Module = Module;
