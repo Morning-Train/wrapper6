@@ -3,14 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.resolve = exports.promisify = undefined;
+exports.promises = exports.promisify = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _es6Promise = require("es6-promise");
 
 exports.promisify = promisify;
-exports.resolve = resolve;
+exports.promises = promises;
 
 /**
  * Transform everything into a promise
@@ -41,7 +41,7 @@ function promisify() {
  * @param {*} promiseLike
  * @returns {Promise}
  */
-function resolve(promiseLike) {
+function promises(promiseLike) {
 
     // Return if already promised
     if (promiseLike instanceof _es6Promise.Promise) {

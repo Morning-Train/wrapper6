@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Module = exports.Scope = exports.ready = exports.use = exports.require = exports.define = exports.scope = exports.queryObject = exports.resolve = exports.promisify = exports.config = undefined;
+exports.Module = exports.Scope = exports.ready = exports.use = exports.resolve = exports.define = exports.scope = exports.queryObject = exports.promises = exports.promisify = exports.config = undefined;
 
 var _config = require("./config");
 
@@ -23,11 +23,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.config = _config2.default;
 exports.promisify = _promises.promisify;
-exports.resolve = _promises.resolve;
+exports.promises = _promises.promises;
 exports.queryObject = _scope.queryObject;
 exports.scope = _scope.createScope;
 exports.define = _packages.define;
-exports.require = _packages.requireDependencies;
+exports.resolve = _packages.requireDependencies;
 exports.use = _modules.useModule;
 exports.ready = _dom.ready;
 exports.Scope = _scope.Scope;

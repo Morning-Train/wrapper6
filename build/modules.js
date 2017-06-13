@@ -38,7 +38,20 @@ function useModule(name, moduleClass) {
     // create module
     var module = new moduleClass();
 
-    return typeof name === "string" ? (0, _packages.define)(name, module.boot.bind(module)) : (0, _packages.define)(module.boot.bind(module));
+    // Wrapper methods
+    function boot() {
+        if (typeof module.boot === "function") {
+            return module.boot.apply(module, arguments);
+        }
+    }
+
+    function ready() {
+        if (typeof module.ready === "function") {
+            return module.ready.apply(module, arguments);
+        }
+    }
+
+    return typeof name === "string" ? (0, _packages.define)(name, boot).then(ready) : (0, _packages.define)(boot).then(ready);
 }
 
 /**
