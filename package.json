@@ -1,6 +1,6 @@
 {
   "name": "wrapper6",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "ES6 application wrapper",
   "main": "build/index.js",
   "scripts": {
