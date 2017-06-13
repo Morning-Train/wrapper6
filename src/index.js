@@ -1,11 +1,18 @@
-import * as utils from "./utils";
-import ReactiveMap from "./reactive-map";
-import Module from "./module";
-import Application from "./application";
+import config from "./config";
+import {promisify, resolve} from "./promises";
+import {Scope, createScope, queryObject} from "./scope";
+import {define, requireDependencies} from "./packages";
+import {Module, useModule} from "./modules";
 
 export {
-    utils,
-    ReactiveMap,
-    Module,
-    Application
+    config,
+    promisify,
+    resolve,
+    queryObject,
+    createScope as scope,
+    define,
+    requireDependencies as require,
+    useModule as use,
+    Scope,
+    Module
 };

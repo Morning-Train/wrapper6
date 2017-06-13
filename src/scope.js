@@ -4,7 +4,46 @@
 
 import Symbol from "es6-symbol";
 import Map from "es6-map";
-import {queryObject} from "./utils";
+
+export {
+    queryObject,
+    createScope,
+    Scope
+};
+
+/*
+ Scope shorthand constructor
+ */
+
+function createScope(data = {}) {
+    return new Scope(data);
+}
+
+/*
+ queryObject
+ */
+
+function queryObject(object, query, defaults = null) {
+    var current = object,
+        queryParts = query.split("."),
+        part;
+
+    if ((object === null) || (object === undefined)) {
+        return defaults;
+    }
+
+    while (current && (queryParts.length > 0)) {
+        part = queryParts.shift();
+
+        if (current[part] === undefined) {
+            return defaults;
+        }
+
+        current = current[part];
+    }
+
+    return current;
+}
 
 /*
  Symbols
@@ -16,10 +55,10 @@ const
     _watchers = Symbol("watchers");
 
 /*
- Class
+ Scope class
  */
 
-export default class ReactiveMap {
+class Scope {
 
     constructor(data = {}) {
         this[_data] = {};

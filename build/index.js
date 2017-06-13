@@ -3,29 +3,29 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Application = exports.Module = exports.ReactiveMap = exports.utils = undefined;
+exports.Module = exports.Scope = exports.use = exports.require = exports.define = exports.scope = exports.queryObject = exports.resolve = exports.promisify = exports.config = undefined;
 
-var _utils = require("./utils");
+var _config = require("./config");
 
-var utils = _interopRequireWildcard(_utils);
+var _config2 = _interopRequireDefault(_config);
 
-var _reactiveMap = require("./reactive-map");
+var _promises = require("./promises");
 
-var _reactiveMap2 = _interopRequireDefault(_reactiveMap);
+var _scope = require("./scope");
 
-var _module = require("./module");
+var _packages = require("./packages");
 
-var _module2 = _interopRequireDefault(_module);
-
-var _application = require("./application");
-
-var _application2 = _interopRequireDefault(_application);
+var _modules = require("./modules");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.utils = utils;
-exports.ReactiveMap = _reactiveMap2.default;
-exports.Module = _module2.default;
-exports.Application = _application2.default;
+exports.config = _config2.default;
+exports.promisify = _promises.promisify;
+exports.resolve = _promises.resolve;
+exports.queryObject = _scope.queryObject;
+exports.scope = _scope.createScope;
+exports.define = _packages.define;
+exports.require = _packages.requireDependencies;
+exports.use = _modules.useModule;
+exports.Scope = _scope.Scope;
+exports.Module = _modules.Module;

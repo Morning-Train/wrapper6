@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.Scope = exports.createScope = exports.queryObject = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -18,11 +19,51 @@ var _es6Map = require("es6-map");
 
 var _es6Map2 = _interopRequireDefault(_es6Map);
 
-var _utils = require("./utils");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+exports.queryObject = queryObject;
+exports.createScope = createScope;
+exports.Scope = Scope;
+
+/*
+ Scope shorthand constructor
+ */
+
+function createScope() {
+    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    return new Scope(data);
+}
+
+/*
+ queryObject
+ */
+
+function queryObject(object, query) {
+    var defaults = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+    var current = object,
+        queryParts = query.split("."),
+        part;
+
+    if (object === null || object === undefined) {
+        return defaults;
+    }
+
+    while (current && queryParts.length > 0) {
+        part = queryParts.shift();
+
+        if (current[part] === undefined) {
+            return defaults;
+        }
+
+        current = current[part];
+    }
+
+    return current;
+}
 
 /*
  Symbols
@@ -33,14 +74,14 @@ var _data = (0, _es6Symbol2.default)("data"),
     _watchers = (0, _es6Symbol2.default)("watchers");
 
 /*
- Class
+ Scope class
  */
 
-var ReactiveMap = function () {
-    function ReactiveMap() {
+var Scope = function () {
+    function Scope() {
         var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        _classCallCheck(this, ReactiveMap);
+        _classCallCheck(this, Scope);
 
         this[_data] = {};
         this[_computed] = new _es6Map2.default();
@@ -50,7 +91,7 @@ var ReactiveMap = function () {
         this.set(data);
     }
 
-    _createClass(ReactiveMap, [{
+    _createClass(Scope, [{
         key: "computed",
         value: function computed(key, getter) {
             var _this = this;
@@ -105,13 +146,13 @@ var ReactiveMap = function () {
                 if (typeof getter === "function") {
                     result = getter.call(this);
 
-                    return tail.length === 0 ? result : (0, _utils.queryObject)(result, tail.join("."), defaultValue);
+                    return tail.length === 0 ? result : queryObject(result, tail.join("."), defaultValue);
                 }
 
                 tail.push(head.pop());
             }
 
-            return (0, _utils.queryObject)(this[_data], query, defaultValue);
+            return queryObject(this[_data], query, defaultValue);
         }
     }, {
         key: "set",
@@ -171,6 +212,19 @@ var ReactiveMap = function () {
             return this;
         }
     }, {
+        key: "remove",
+        value: function remove(query) {
+            var parts = query.split("."),
+                key = parts.pop(),
+                target = parts.length > 0 ? this.get(parts.join(".")) : this.get();
+
+            if (target && (typeof target === "undefined" ? "undefined" : _typeof(target)) === "object") {
+                delete target[key];
+            }
+
+            return this;
+        }
+    }, {
         key: "has",
         value: function has(query) {
             return this.get(query) !== null;
@@ -197,7 +251,5 @@ var ReactiveMap = function () {
         }
     }]);
 
-    return ReactiveMap;
+    return Scope;
 }();
-
-exports.default = ReactiveMap;
