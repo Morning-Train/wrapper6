@@ -29,9 +29,22 @@ function useModule(name, moduleClass) {
     // create module
     let module = new moduleClass();
 
+    // Wrapper methods
+    function boot() {
+        if (typeof module.boot === "function") {
+            return module.boot.apply(module, arguments);
+        }
+    }
+
+    function ready() {
+        if (typeof module.ready === "function") {
+            return module.ready.apply(module, arguments);
+        }
+    }
+
     return (typeof name === "string") ?
-        define(name, module.boot.bind(module)) :
-        define(module.boot.bind(module));
+        define(name, boot).then(ready) :
+        define(boot).then(ready);
 }
 
 /**
