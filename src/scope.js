@@ -5,12 +5,6 @@
 import Symbol from "es6-symbol";
 import Map from "es6-map";
 
-export {
-    queryObject,
-    createScope,
-    Scope
-};
-
 /*
  Scope shorthand constructor
  */
@@ -215,3 +209,15 @@ class Scope {
     }
 
 }
+
+/*
+ -------------------------------
+ Exports
+ -------------------------------
+ */
+
+export {
+    queryObject,
+    createScope,
+    Scope
+};

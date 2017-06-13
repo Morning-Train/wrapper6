@@ -8,10 +8,6 @@
  */
 
 import {define} from "./packages";
-export {
-    useModule,
-    Module
-};
 
 /**
  * Module loader
@@ -57,3 +53,14 @@ class Module {
     ready() {
     }
 }
+
+/*
+ -------------------------------
+ Exports
+ -------------------------------
+ */
+
+export {
+    useModule,
+    Module
+};
