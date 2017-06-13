@@ -10,6 +10,7 @@
 // @dependencies
 import config from "./config";
 import {EventEmitter} from "events";
+import {Promise} from "es6-promise";
 
 // @private
 let events = new EventEmitter(),
