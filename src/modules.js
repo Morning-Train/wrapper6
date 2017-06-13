@@ -8,6 +8,8 @@
  */
 
 import {define} from "./packages";
+import {Promise} from "es6-promise";
+import {promisify} from "./promises";
 
 /**
  * Module loader
@@ -23,18 +25,28 @@ function useModule(name, moduleClass) {
     }
 
     // create module
-    let module = new moduleClass();
+    let module = new moduleClass(),
+        bootResponse;
 
     // Wrapper methods
     function boot() {
-        if (typeof module.boot === "function") {
-            return module.boot.apply(module, arguments);
+        let initialResponse = typeof module.boot === "function" ? module.boot() : null;
+
+        if (initialResponse === false) {
+            return false;
         }
+
+        return initialResponse instanceof Promise ?
+            initialResponse.then((response) => {
+                bootResponse = response;
+                return module;
+
+            }) : module;
     }
 
     function ready() {
         if (typeof module.ready === "function") {
-            return module.ready.apply(module, arguments);
+            return module.ready(bootResponse);
         }
     }
 

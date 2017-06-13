@@ -125,22 +125,16 @@ function define(name, dependencies, callback) {
         requireDependencies(dependencies).then(function (requirements) {
             var bootResponse = typeof callback === "function" ? callback(requirements) : callback;
 
-            if (bootResponse === false) {
-                // cancel timeout
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
-                }
-
-                return;
-            }
-
             // register package
             function register(pack) {
                 // cancel timeout
                 if (timer) {
                     clearTimeout(timer);
                     timer = null;
+                }
+
+                if (pack === false) {
+                    return;
                 }
 
                 if (typeof name === "string") {

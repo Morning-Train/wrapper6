@@ -16,6 +16,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _packages = require("./packages");
 
+var _es6Promise = require("es6-promise");
+
+var _promises = require("./promises");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -32,18 +36,26 @@ function useModule(name, moduleClass) {
     }
 
     // create module
-    var module = new moduleClass();
+    var module = new moduleClass(),
+        bootResponse = void 0;
 
     // Wrapper methods
     function boot() {
-        if (typeof module.boot === "function") {
-            return module.boot.apply(module, arguments);
+        var initialResponse = typeof module.boot === "function" ? module.boot() : null;
+
+        if (initialResponse === false) {
+            return false;
         }
+
+        return initialResponse instanceof _es6Promise.Promise ? initialResponse.then(function (response) {
+            bootResponse = response;
+            return module;
+        }) : module;
     }
 
     function ready() {
         if (typeof module.ready === "function") {
-            return module.ready.apply(module, arguments);
+            return module.ready(bootResponse);
         }
     }
 
