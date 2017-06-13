@@ -117,7 +117,10 @@ function define(name, dependencies, callback) {
         if (typeof timeout === "number") {
             timer = setTimeout(function () {
                 timer = null;
-                throw new Error("Package '" + name + "' timed out!");
+
+                if (_config2.default.get("debug", true)) {
+                    throw new Error("Package '" + name + "' timed out!");
+                }
             }, timeout);
         }
 

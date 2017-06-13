@@ -107,7 +107,10 @@ function define(name, dependencies, callback) {
         if (typeof timeout === "number") {
             timer = setTimeout(() => {
                 timer = null;
-                throw new Error(`Package '${name}' timed out!`);
+
+                if (config.get("debug", true)) {
+                    throw new Error(`Package '${name}' timed out!`);
+                }
 
             }, timeout);
         }
