@@ -27,8 +27,8 @@ export {
  * @param dependencies
  * @returns {Promise}
  */
-function requireDependencies(dependencies) {
-    return new Promise((succeed, fail) => {
+function requireDependencies(dependencies, callback = null) {
+    let promise = new Promise((succeed, fail) => {
         let requirements = {};
 
         // no requirements
@@ -58,6 +58,10 @@ function requireDependencies(dependencies) {
         // First check
         checkStatus();
     });
+
+    return (typeof callback === "function") ?
+        promise.then(callback) :
+        promise;
 };
 
 /**

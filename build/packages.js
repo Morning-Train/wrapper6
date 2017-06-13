@@ -39,7 +39,9 @@ exports.requireDependencies = requireDependencies;
  */
 
 function requireDependencies(dependencies) {
-    return new Promise(function (succeed, fail) {
+    var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    var promise = new Promise(function (succeed, fail) {
         var requirements = {};
 
         // no requirements
@@ -68,6 +70,8 @@ function requireDependencies(dependencies) {
         // First check
         checkStatus();
     });
+
+    return typeof callback === "function" ? promise.then(callback) : promise;
 };
 
 /**
