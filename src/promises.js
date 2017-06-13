@@ -2,7 +2,7 @@ import {Promise} from "es6-promise";
 
 export {
     promisify,
-    resolve
+    promises
 };
 
 /**
@@ -32,7 +32,7 @@ function promisify(promiseLike = null) {
  * @param {*} promiseLike
  * @returns {Promise}
  */
-function resolve(promiseLike) {
+function promises(promiseLike) {
 
     // Return if already promised
     if (promiseLike instanceof Promise) {

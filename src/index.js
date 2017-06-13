@@ -1,5 +1,5 @@
 import config from "./config";
-import {promisify, resolve} from "./promises";
+import {promisify, promises} from "./promises";
 import {Scope, createScope, queryObject} from "./scope";
 import {define, requireDependencies} from "./packages";
 import {Module, useModule} from "./modules";
@@ -8,11 +8,11 @@ import {ready} from "./dom";
 export {
     config,
     promisify,
-    resolve,
+    promises,
     queryObject,
     createScope as scope,
     define,
-    requireDependencies as require,
+    requireDependencies as resolve,
     useModule as use,
     ready,
     Scope,
