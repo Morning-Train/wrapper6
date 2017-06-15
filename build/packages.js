@@ -9,7 +9,7 @@ var _config = require("./config");
 
 var _config2 = _interopRequireDefault(_config);
 
-var _events = require("events");
+var _events = require("./events");
 
 var _es6Promise = require("es6-promise");
 
