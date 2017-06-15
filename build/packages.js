@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.requireDependencies = exports.definePackage = undefined;
+exports.wrapAll = exports.requireDependencies = exports.definePackage = undefined;
 
 var _config = require("./config");
 
@@ -32,6 +32,7 @@ var events = new _events.EventEmitter(),
 // @dependencies
 exports.definePackage = definePackage;
 exports.requireDependencies = requireDependencies;
+exports.wrapAll = wrapAll;
 
 /**
  * Resolve an array of dependencies
@@ -162,3 +163,20 @@ function definePackage(name, dependencies, callback) {
         });
     });
 };
+
+/**
+ * Runs the callback with all currently loaded packages
+ *
+ * @param callback
+ * @returns {*}
+ */
+function wrapAll(callback) {
+    // Prepare packages
+    var packs = {};
+
+    packages.forEach(function (pack, name) {
+        packs[name] = pack;
+    });
+
+    return callback(packs);
+}

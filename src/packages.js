@@ -19,7 +19,8 @@ let events = new EventEmitter(),
 // @public
 export {
     definePackage,
-    requireDependencies
+    requireDependencies,
+    wrapAll
 };
 
 /**
@@ -155,3 +156,20 @@ function definePackage(name, dependencies, callback) {
         });
     });
 };
+
+/**
+ * Runs the callback with all currently loaded packages
+ *
+ * @param callback
+ * @returns {*}
+ */
+function wrapAll(callback) {
+    // Prepare packages
+    let packs = {};
+
+    packages.forEach((pack, name) => {
+        packs[name] = pack;
+    });
+
+    return callback(packs);
+}

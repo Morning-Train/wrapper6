@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Module = exports.Scope = exports.ready = exports.use = exports.require = exports.define = exports.scope = exports.queryObject = exports.resolve = exports.promisify = exports.config = undefined;
+exports.Module = exports.Scope = exports.ready = exports.use = exports.run = exports.require = exports.define = exports.scope = exports.queryObject = exports.resolve = exports.promisify = exports.config = undefined;
 
 var _config = require("./config");
 
@@ -28,6 +28,7 @@ exports.queryObject = _scope.queryObject;
 exports.scope = _scope.createScope;
 exports.define = _packages.definePackage;
 exports.require = _packages.requireDependencies;
+exports.run = _packages.wrapAll;
 exports.use = _modules.useModule;
 exports.ready = _dom.ready;
 exports.Scope = _scope.Scope;
