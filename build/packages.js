@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.requireDependencies = exports.define = undefined;
+exports.requireDependencies = exports.definePackage = undefined;
 
 var _config = require("./config");
 
@@ -30,7 +30,7 @@ var events = new _events.EventEmitter(),
  */
 
 // @dependencies
-exports.define = define;
+exports.definePackage = definePackage;
 exports.requireDependencies = requireDependencies;
 
 /**
@@ -84,7 +84,7 @@ function requireDependencies(dependencies) {
  * @param callback
  * @returns {Promise.<TResult>}
  */
-function define(name, dependencies, callback) {
+function definePackage(name, dependencies, callback) {
     // Adjust arguments
     if (typeof name === "function") {
         callback = name;

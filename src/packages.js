@@ -18,7 +18,7 @@ let events = new EventEmitter(),
 
 // @public
 export {
-    define,
+    definePackage,
     requireDependencies
 };
 
@@ -73,7 +73,7 @@ function requireDependencies(dependencies, callback = null) {
  * @param callback
  * @returns {Promise.<TResult>}
  */
-function define(name, dependencies, callback) {
+function definePackage(name, dependencies, callback) {
     // Adjust arguments
     if (typeof name === "function") {
         callback = name;
