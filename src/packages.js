@@ -11,6 +11,7 @@
 import config from "./config";
 import {EventEmitter} from "./events";
 import {Promise} from "es6-promise";
+import Map from "es6-map";
 
 // @private
 let events = new EventEmitter(),

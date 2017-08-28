@@ -13,13 +13,13 @@ var _events = require("./events");
 
 var _es6Promise = require("es6-promise");
 
+var _es6Map = require("es6-map");
+
+var _es6Map2 = _interopRequireDefault(_es6Map);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // @private
-var events = new _events.EventEmitter(),
-    packages = new Map();
-
-// @public
 /*
  |--------------------------------------------------------------------------
  | Package manager
@@ -30,6 +30,10 @@ var events = new _events.EventEmitter(),
  */
 
 // @dependencies
+var events = new _events.EventEmitter(),
+    packages = new _es6Map2.default();
+
+// @public
 exports.definePackage = definePackage;
 exports.requireDependencies = requireDependencies;
 exports.wrapAll = wrapAll;
